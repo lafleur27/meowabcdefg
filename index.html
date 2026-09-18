@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#ffffff" />
+    <meta name="description" content="Loop - close the loop on Solana liquidity. $LOOP routes flow through micro pools, harvests the spread, and pays it back to holders." />
+    <title>Loop - $LOOP on Solana</title>
+    <link rel="icon" type="image/jpeg" href="/assets/loop-logo.jpg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="nav" id="top">
+      <div class="container nav-inner">
+        <a class="brand" href="#top">
+          <img src="assets/loop-banner.jpg" alt="Loop" class="brand-logo" />
+        </a>
+        <nav class="links" id="links">
+          <a href="#loop">The Loop</a>
+          <a href="#why">Why Loop</a>
+          <a href="#tokenomics">Tokenomics</a>
+          <a href="#roadmap">Roadmap</a>
+          <a href="#faq">FAQ</a>
+        </nav>
+        <div class="nav-cta">
+          <a href="#buy" class="btn btn-primary buy-link">Buy $LOOP</a>
+          <button class="burger" id="burger" aria-label="Menu"><span></span><span></span><span></span></button>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="hero-glow"></div>
+        <div class="container hero-inner">
+          <p class="eyebrow reveal">Loop&nbsp;&nbsp;//&nbsp;&nbsp;Solana&nbsp;&nbsp;//&nbsp;&nbsp;Est. 2026</p>
+          <h1 class="reveal">Close the loop<br /><span class="accent">on liquidity.</span></h1>
+          <p class="lede reveal">Volatility in, yield out. $LOOP routes flow through a mesh of micro liquidity pools, harvests the spread, and sends the sweep back to holders. Then it does it again.</p>
+          <div class="hero-actions reveal">
+            <a href="#buy" class="btn btn-primary btn-lg buy-link">Buy $LOOP</a>
+            <a href="#loop" class="btn btn-ghost btn-lg">How it works</a>
+          </div>
+          <div class="contract reveal" id="buy">
+            <span class="contract-label mono">CONTRACT</span>
+            <code class="mono" id="ca">F3gA9AMExaqraw3uHmt2QhTDqLWAZ49B9j48mf7yvREV</code>
+            <button class="copy-btn" id="copy" aria-label="Copy contract address">Copy</button>
+          </div>
+        </div>
+        <div class="ticker" aria-hidden="true">
+          <div class="ticker-track mono">
+            <span>$LOOP</span><span>•</span><span>Micro pools</span><span>•</span><span>Fee capture</span><span>•</span><span>Holder sweep</span><span>•</span><span>Solana speed</span><span>•</span><span>Zero downtime</span><span>•</span>
+            <span>$LOOP</span><span>•</span><span>Micro pools</span><span>•</span><span>Fee capture</span><span>•</span><span>Holder sweep</span><span>•</span><span>Solana speed</span><span>•</span><span>Zero downtime</span><span>•</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="stats">
+        <div class="container stats-grid">
+          <div class="stat reveal"><span class="stat-num mono" id="stat-price">—</span><span class="stat-label">Price $LOOP</span></div>
+          <div class="stat reveal"><span class="stat-num mono" id="stat-change">—</span><span class="stat-label">24h change</span></div>
+          <div class="stat reveal"><span class="stat-num mono" id="stat-volume">—</span><span class="stat-label">24h volume</span></div>
+          <div class="stat reveal"><span class="stat-num mono" id="stat-liquidity">—</span><span class="stat-label">Liquidity</span></div>
+        </div>
+      </section>
+
+      <section class="section" id="loop">
+        <div class="container">
+          <p class="eyebrow reveal">The mechanism</p>
+          <h2 class="reveal">One trade, <span class="accent">four turns</span> of the loop</h2>
+          <div class="steps">
+            <article class="card step reveal">
+              <div class="step-num mono">01</div>
+              <h3>Buy</h3>
+              <p>Every $LOOP swap feeds the engine. A slice of each trade is routed into working liquidity instead of sitting idle.</p>
+            </article>
+            <article class="card step reveal">
+              <div class="step-num mono">02</div>
+              <h3>Deploy</h3>
+              <p>Capital splits across dozens of micro pools on tight pairs, so depth is everywhere and slippage is nowhere.</p>
+            </article>
+            <article class="card step reveal">
+              <div class="step-num mono">03</div>
+              <h3>Harvest</h3>
+              <p>Traders pay spread to move size. The loop collects that spread block by block, compounding it on the way.</p>
+            </article>
+            <article class="card step reveal">
+              <div class="step-num mono">04</div>
+              <h3>Sweep</h3>
+              <p>Profits rotate back out: rebalance the pools, pay holders, repeat. The circle never has an exit.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section alt" id="why">
+        <div class="container">
+          <p class="eyebrow reveal">Why it works</p>
+          <h2 class="reveal">Built to <span class="accent">spin</span></h2>
+          <div class="feature-grid">
+            <div class="card feature reveal"><h3>Micro-pool mesh</h3><p>Small, focused pools out-earn one fat pool. Tight ranges, high fee-per-dollar-of-volume, capital that actually touches trades.</p></div>
+            <div class="card feature reveal"><h3>Spread, not speculation</h3><p>Yield comes from real swap fees captured from organic volatility - not emissions printed out of thin air.</p></div>
+            <div class="card feature reveal"><h3>Holder sweep</h3><p>Distributed to wallets that hold through the turn. Longer in the loop, bigger slice of the harvest.</p></div>
+            <div class="card feature reveal"><h3>Solana-native</h3><p>Sub-second settlement means the loop rebalances constantly, not once a week on a permissionless chain.</p></div>
+            <div class="card feature reveal"><h3>Fair launch posture</h3><p>No presale allocation games. Contract, liquidity and dashboard ship together or not at all.</p></div>
+            <div class="card feature reveal"><h3>Open receipts</h3><p>Pool positions, fee capture and sweeps are all verifiable on-chain. Numbers you can check, not a slide you trust.</p></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="tokenomics">
+        <div class="container">
+          <p class="eyebrow reveal">Distribution</p>
+          <h2 class="reveal">Tokenomics of <span class="accent">$LOOP</span></h2>
+          <p class="section-lede reveal">1,000,000,000 $LOOP. Fixed supply. Every slice has a job inside the loop.</p>
+          <div class="toko">
+            <div class="toko-bars">
+              <div class="toko-row reveal" data-value="40"><span>Liquidity engine</span><div class="bar"><i></i></div><b class="mono">40%</b></div>
+              <div class="toko-row reveal" data-value="25"><span>Holder sweep pool</span><div class="bar"><i></i></div><b class="mono">25%</b></div>
+              <div class="toko-row reveal" data-value="15"><span>Ecosystem &amp; integrations</span><div class="bar"><i></i></div><b class="mono">15%</b></div>
+              <div class="toko-row reveal" data-value="10"><span>Team (vested)</span><div class="bar"><i></i></div><b class="mono">10%</b></div>
+              <div class="toko-row reveal" data-value="10"><span>Marketing &amp; CEX ops</span><div class="bar"><i></i></div><b class="mono">10%</b></div>
+            </div>
+            <div class="toko-notes card reveal">
+              <h3>Fine print, out front</h3>
+              <ul>
+                <li>0% buy / 0% sell tax</li>
+                <li>Liquidity locked at launch</li>
+                <li>Team tokens linear-vested over 24 months</li>
+                <li>LP rewards sourced from captured fees, not inflation</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section alt" id="roadmap">
+        <div class="container">
+          <p class="eyebrow reveal">Trajectory</p>
+          <h2 class="reveal">The <span class="accent">roadmap</span></h2>
+          <div class="roadmap">
+            <div class="phase reveal done"><div class="phase-dot"></div><h3 class="mono">Phase 0</h3><p>Fair launch of $LOOP. Contract audit, site live, liquidity seeded.</p></div>
+            <div class="phase reveal"><div class="phase-dot"></div><h3 class="mono">Phase 1</h3><p>First micro pools deployed. Live dashboard with per-pool fee capture.</p></div>
+            <div class="phase reveal"><div class="phase-dot"></div><h3 class="mono">Phase 2</h3><p>Automated rebalancing + MEV-aware routing. Holder sweep goes programmatic.</p></div>
+            <div class="phase reveal"><div class="phase-dot"></div><h3 class="mono">Phase 3</h3><p>Listings, cross-pool strategy market, loop governance handed to holders.</p></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section teaser-section">
+        <div class="container teaser reveal">
+          <img src="assets/loop-teaser.jpg" alt="Loop - Coming Soon" class="teaser-img" />
+        </div>
+      </section>
+
+      <section class="section" id="faq">
+        <div class="container faq-wrap">
+          <p class="eyebrow reveal">Answers</p>
+          <h2 class="reveal">FAQ</h2>
+          <div class="faq">
+            <details class="reveal"><summary>What is $LOOP?</summary><p>$LOOP is the token that powers the loop: a slice of its flow is deployed into micro liquidity pools on Solana, and the fees those pools earn are swept back to the ecosystem and holders.</p></details>
+            <details class="reveal"><summary>Where does the yield actually come from?</summary><p>Swap fees. Every trader paying spread to move size across a pool is the revenue source. That makes the yield tied to real activity, not printed emissions.</p></details>
+            <details class="reveal"><summary>What are micro pools and why not one big pool?</summary><p>Small pools concentrated on tight price ranges capture far more fees per dollar of liquidity than a wide, lazy pool. The mesh of them covers the whole board.</p></details>
+            <details class="reveal"><summary>How do I get paid as a holder?</summary><p>The sweep step of the loop distributes harvested fees to eligible holder wallets. Details and the claims dashboard ship with Phase 1.</p></details>
+            <details class="reveal"><summary>Is the contract audited?</summary><p>Launch happens with the audit and locked liquidity - check the contract address above before buying anything, and only trust links from this site's footer.</p></details>
+          </div>
+        </div>
+      </section>
+
+      <section class="cta-band">
+        <div class="container cta-inner reveal">
+          <h2>Get in before the next <span class="accent">turn</span>.</h2>
+          <div class="hero-actions">
+            <a href="#buy" class="btn btn-primary btn-lg buy-link">Buy $LOOP</a>
+            <a href="https://x.com/loopcoin_sol?s=11" target="_blank" rel="noopener" class="btn btn-ghost btn-lg">Follow on X</a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="container footer-inner">
+        <a class="brand" href="#top"><img src="assets/loop-banner.jpg" alt="Loop" class="brand-logo" /></a>
+        <div class="footer-links">
+          <a href="https://x.com/loopcoin_sol?s=11" target="_blank" rel="noopener">X / Twitter</a>
+          <a href="https://t.me/loopcoin_sol" target="_blank" rel="noopener">Telegram</a>
+          <a href="#faq">FAQ</a>
+          <a href="#tokenomics">Tokenomics</a>
+        </div>
+        <p class="disclaimer">This site is for information only and is not financial advice. Digital assets are volatile - do your own research.</p>
+        <p class="mono copyright">© 2026 Loop. All rights reserved.</p>
+      </div>
+    </footer>
+
+    <script src="main.js"></script>
+  </body>
+</html>
