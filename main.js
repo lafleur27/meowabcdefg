@@ -13,26 +13,29 @@ links.querySelectorAll("a").forEach((a) =>
   })
 );
 
-const copyBtn = document.getElementById("copy");
 const ca = document.getElementById("ca");
 
-copyBtn.addEventListener("click", async () => {
-  try {
-    await navigator.clipboard.writeText(ca.textContent.trim());
-    copyBtn.textContent = "Copied";
-    copyBtn.classList.add("copied");
-    setTimeout(() => {
-      copyBtn.textContent = "Copy";
-      copyBtn.classList.remove("copied");
-    }, 1600);
-  } catch {
-    ca.removeAttribute("readonly");
-    const r = document.createRange();
-    r.selectNodeContents(ca);
-    const sel = window.getSelection();
-    sel.removeAllRanges();
-    sel.addRange(r);
-  }
+document.querySelectorAll(".copy-btn").forEach((btn) => {
+  const code = btn.closest(".contract").querySelector("code");
+  if (!code) return;
+  btn.addEventListener("click", async () => {
+    try {
+      await navigator.clipboard.writeText(code.textContent.trim());
+      const old = btn.textContent;
+      btn.textContent = "Copied";
+      btn.classList.add("copied");
+      setTimeout(() => {
+        btn.textContent = old;
+        btn.classList.remove("copied");
+      }, 1600);
+    } catch {
+      const r = document.createRange();
+      r.selectNodeContents(code);
+      const sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(r);
+    }
+  });
 });
 
 const counters = document.querySelectorAll("[data-count]");
@@ -112,7 +115,7 @@ async function loadStats() {
     const pair = (pairs || [])
       .filter((p) => p.chainId === "solana")
       .sort((a, b) => (b?.liquidity?.usd ?? 0) - (a?.liquidity?.usd ?? 0))[0];
-    if (!pair) return;
+    if (!pair) throw new Error("no pair");
     statEls.price.textContent = fmtPrice(parseFloat(pair.priceUsd));
     const chg = pair.priceChange?.h24;
     if (chg != null) {
@@ -120,6 +123,27 @@ async function loadStats() {
     }
     statEls.volume.textContent = fmtUsd(pair.volume?.h24);
     statEls.liquidity.textContent = fmtUsd(pair.liquidity?.usd);
+  } catch {
+    await loadStatsFallback(addr);
+  }
+}
+
+async function loadStatsFallback(addr) {
+  try {
+    const base = "https://api.geckoterminal.com/api/v2/networks/solana";
+    const info = await fetchCached(`${base}/tokens/${addr}`, STATS_REFRESH_MS, "gt_stat_token");
+    const a = info && info.data && info.data.attributes;
+    if (!a) return;
+    statEls.price.textContent = fmtPrice(parseFloat(a.price_usd));
+    statEls.volume.textContent = fmtUsd(parseFloat(a.volume_usd && a.volume_usd.h24));
+    statEls.liquidity.textContent = fmtUsd(parseFloat(a.total_reserve_in_usd));
+    const pools = await fetchCached(`${base}/tokens/${addr}/pools?page=1`, STATS_REFRESH_MS, "gt_stat_pools");
+    const arr = pools && Array.isArray(pools.data) ? pools.data : null;
+    const top = arr
+      ? arr.slice().sort((x, y) => parseFloat(y.attributes.reserve_in_usd || 0) - parseFloat(x.attributes.reserve_in_usd || 0))[0]
+      : null;
+    const chg = top && top.attributes.price_change_percentage && top.attributes.price_change_percentage.h24;
+    if (chg != null) statEls.change.textContent = (Number(chg) >= 0 ? "+" : "") + Number(chg).toFixed(1) + "%";
   } catch {
     /* keep placeholders on failure */
   }
