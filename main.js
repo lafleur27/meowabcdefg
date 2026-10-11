@@ -253,7 +253,7 @@ function trackLiquidity(liq) {
 function drawGrowthChart({ rewards, liq }) {
   const svg = document.getElementById("growthChart");
   if (!svg) return;
-  const W = 820, H = 280, padL = 8, padR = 8, padT = 10, padB = 14;
+  const W = 820, H = 280, padL = 58, padR = 8, padT = 14, padB = 18;
   const iw = W - padL - padR, ih = H - padT - padB;
   const all = [...rewards.map((p) => p.t), ...liq.map((p) => p.t)];
   if (!all.length) return;
@@ -264,15 +264,30 @@ function drawGrowthChart({ rewards, liq }) {
   const Y = (v) => padT + (1 - v / ymax) * ih;
   const path = (pts) =>
     pts.map((p, i) => (i ? "L" : "M") + X(p.t).toFixed(1) + " " + Y(p.v).toFixed(1)).join("");
-  let grid = "";
-  for (let g = 1; g <= 4; g++) {
-    const y = padT + (ih * g) / 5;
+  const ticks = 4;
+  let grid = `<line class="chart-grid" x1="${padL}" y1="${padT + ih}" x2="${padL + iw}" y2="${padT + ih}"/>`;
+  for (let g = 0; g <= ticks; g++) {
+    const v = ymax * (1 - g / ticks);
+    const y = padT + (ih * g) / ticks;
     grid += `<line class="chart-grid" x1="${padL}" y1="${y}" x2="${padL + iw}" y2="${y}"/>`;
+    grid += `<text class="chart-label" x="${padL - 8}" y="${y + 3}" text-anchor="end">${fmtUsd(v)}</text>`;
+  }
+  let end = "";
+  const rl = rewards[rewards.length - 1];
+  if (rl) {
+    end += `<circle cx="${X(rl.t).toFixed(1)}" cy="${Y(rl.v).toFixed(1)}" r="3.5" fill="#000"/>`;
+    end += `<text class="chart-label chart-label-end" x="${(X(rl.t) - 5).toFixed(1)}" y="${(Y(rl.v) - 7).toFixed(1)}" text-anchor="end">${fmtUsd(rl.v)}</text>`;
+  }
+  const ll = liq[liq.length - 1];
+  if (ll) {
+    end += `<circle cx="${X(ll.t).toFixed(1)}" cy="${Y(ll.v).toFixed(1)}" r="3.5" fill="#a3a3a3"/>`;
+    end += `<text class="chart-label chart-label-end" x="${(X(ll.t) - 5).toFixed(1)}" y="${(Y(ll.v) + 15).toFixed(1)}" text-anchor="end">${fmtUsd(ll.v)}</text>`;
   }
   svg.innerHTML =
     grid +
     `<path d="${path(rewards)}" fill="none" stroke="#000" stroke-width="2"/>` +
-    `<path d="${path(liq)}" fill="none" stroke="#a3a3a3" stroke-width="2" stroke-dasharray="3 3"/>`;
+    `<path d="${path(liq)}" fill="none" stroke="#a3a3a3" stroke-width="2" stroke-dasharray="3 3"/>` +
+    end;
   document.getElementById("chart-time-min").textContent = fmtDate(x0);
   document.getElementById("chart-time-max").textContent = fmtDate(x1);
 }
@@ -296,17 +311,25 @@ function renderDaily(daily) {
 function renderDailyBars(daily) {
   const svg = document.getElementById("dailyChart");
   if (!svg) return;
-  const W = 820, H = 290, padT = 8, padB = 24, padL = 6, padR = 6;
+  const W = 820, H = 290, padT = 8, padB = 24, padL = 58, padR = 6;
   const iw = W - padL - padR, ih = H - padT - padB;
   const days = daily.slice(-20);
   const max = Math.max(...days.map((d) => d.dist));
   const slot = iw / days.length;
   const bw = slot * 0.72;
-  let buf = `<line class="chart-grid" x1="${padL}" y1="${padT + ih}" x2="${padL + iw}" y2="${padT + ih}"/>`;
+  const ticks = 4;
+  let buf = "";
+  for (let g = 0; g <= ticks; g++) {
+    const v = max * (1 - g / ticks);
+    const y = padT + (ih * g) / ticks;
+    buf += `<line class="chart-grid" x1="${padL}" y1="${y}" x2="${padL + iw}" y2="${y}"/>`;
+    buf += `<text class="chart-label" x="${padL - 8}" y="${y + 3}" text-anchor="end">${fmtUsd(v)}</text>`;
+  }
   days.forEach((d, i) => {
     const hh = max ? (d.dist / max) * ih : 0;
     const x = padL + i * slot + (slot - bw) / 2;
     buf += `<rect x="${x.toFixed(1)}" y="${(padT + ih - hh).toFixed(1)}" width="${bw.toFixed(1)}" height="${hh.toFixed(1)}" rx="2" fill="#000"/>`;
+    buf += `<text class="chart-label chart-label-bar" x="${(x + bw / 2).toFixed(1)}" y="${(padT + ih - hh - 4).toFixed(1)}" text-anchor="middle">${fmtUsd(d.dist)}</text>`;
   });
   svg.innerHTML = buf;
   document.getElementById("daily-min").textContent = fmtDate(days[0].t);
@@ -315,7 +338,15 @@ function renderDailyBars(daily) {
 
 async function loadDashboard() {
   const pools = await loadPools();
-  if (!pools) return;
+  if (!pools) {
+    const list = document.getElementById("pool-list");
+    if (list && !list.querySelector(".pool-row")) {
+      list.innerHTML = `<div class="pool-empty">Couldn't reach the data API - retrying…</div>`;
+    }
+    clearTimeout(loadDashboard._rt);
+    loadDashboard._rt = setTimeout(loadDashboard, 15000);
+    return;
+  }
   const totalLiq = pools.reduce((s, p) => s + p.liq, 0);
   const totalVol = pools.reduce((s, p) => s + p.vol24, 0);
   const rewards24 = HOLDER_SHARE * totalVol;
