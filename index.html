@@ -20,6 +20,7 @@
         </a>
         <nav class="links" id="links">
           <a href="#loop">The Loop</a>
+          <a href="#dashboard">Live</a>
           <a href="#why">Why Loop</a>
           <a href="#tokenomics">Tokenomics</a>
           <a href="#roadmap">Roadmap</a>
@@ -63,6 +64,63 @@
           <div class="stat reveal"><span class="stat-num mono" id="stat-change">—</span><span class="stat-label">24h change</span></div>
           <div class="stat reveal"><span class="stat-num mono" id="stat-volume">—</span><span class="stat-label">24h volume</span></div>
           <div class="stat reveal"><span class="stat-num mono" id="stat-liquidity">—</span><span class="stat-label">Liquidity</span></div>
+        </div>
+      </section>
+
+      <section class="section alt" id="dashboard">
+        <div class="container">
+          <p class="eyebrow reveal">Live data</p>
+          <h2 class="reveal">The loop, <span class="accent">on the wire</span></h2>
+          <p class="section-lede reveal">Liquidity, holder rewards and pools, pulled live. Holder rewards = 50% of the 6% tax (3% of traded volume), distributed in $SOL.</p>
+
+          <div class="dash-head reveal">
+            <div class="dash-stat"><span class="mono stat-num" id="dash-liquidity">—</span><span class="stat-label">Total liquidity</span></div>
+            <div class="dash-stat"><span class="mono stat-num" id="dash-rewards">—</span><span class="stat-label">Total holder rewards</span></div>
+            <div class="dash-stat"><span class="mono stat-num" id="dash-rewards24">—</span><span class="stat-label">Rewards, last 24h</span></div>
+            <div class="dash-stat"><span class="mono stat-num" id="dash-pools">—</span><span class="stat-label">Liquidity pools</span></div>
+          </div>
+
+          <div class="dash-chart card reveal">
+            <div class="dash-chart-head">
+              <h3>Ecosystem growth over time</h3>
+              <div class="chart-legend">
+                <span class="lg lg-liq"><i></i>Total liquidity</span>
+                <span class="lg lg-reward"><i></i>Total holder rewards</span>
+              </div>
+            </div>
+            <div class="chart-box">
+              <svg id="growthChart" viewBox="0 0 820 280" preserveAspectRatio="none" aria-label="Liquidity and holder rewards over time"></svg>
+            </div>
+            <div class="chart-axis"><span id="chart-time-min">…</span><span id="chart-time-max">now</span></div>
+            <p class="chart-note" id="chart-note"></p>
+          </div>
+
+          <div class="dash-cols">
+            <div class="card reveal">
+              <h3>Liquidity pools</h3>
+              <p class="card-sub">Live pool depth across all pairs.</p>
+              <div class="pool-list" id="pool-list">
+                <div class="pool-empty">Loading pools…</div>
+              </div>
+            </div>
+
+            <div class="card reveal">
+              <div class="dash-chart-head">
+                <h3>Daily distributions</h3>
+                <a class="more-link" href="#" id="dist-chart-toggle">chart</a>
+              </div>
+              <p class="card-sub">Estimated $SOL paid to holders each day (3% of volume).</p>
+              <div class="daily-wrap">
+                <div class="daily-list" id="daily-list">
+                  <div class="pool-empty">Loading distributions…</div>
+                </div>
+                <div class="daily-chart hidden" id="daily-chart-wrap">
+                  <svg id="dailyChart" viewBox="0 0 820 300" preserveAspectRatio="none"></svg>
+                    <div class="chart-axis"><span id="daily-min">…</span><span id="daily-max">now</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
