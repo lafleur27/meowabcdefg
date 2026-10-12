@@ -250,43 +250,74 @@ function trackLiquidity(liq) {
   return [{ t: start, v: liq }, ...pts.map((p) => ({ t: p[0], v: p[1] }))];
 }
 
-function drawGrowthChart({ rewards, liq }) {
+function drawGrowthChart({ rewards, daily }) {
   const svg = document.getElementById("growthChart");
-  if (!svg) return;
+  if (!svg || !rewards || !rewards.length) return;
   const W = 820, H = 280, padL = 58, padR = 8, padT = 14, padB = 18;
   const iw = W - padL - padR, ih = H - padT - padB;
-  const all = [...rewards.map((p) => p.t), ...liq.map((p) => p.t)];
-  if (!all.length) return;
-  let x0 = Math.min(...all), x1 = Math.max(...all);
+  let x0 = Math.min(...rewards.map((p) => p.t));
+  let x1 = Math.max(...rewards.map((p) => p.t));
   if (x1 === x0) x1 = x0 + 1;
-  const ymax = Math.max(1, ...rewards.map((p) => p.v), ...liq.map((p) => p.v));
   const X = (t) => padL + ((t - x0) / (x1 - x0)) * iw;
-  const Y = (v) => padT + (1 - v / ymax) * ih;
-  const path = (pts) =>
+
+  // Growth line (cumulative): zoom the vertical range tightly to its own spread
+  // so the growth curve fills the chart instead of hugging the baseline.
+  const cumVals = rewards.map((p) => p.v);
+  const cMax = Math.max(1, ...cumVals);
+  const cMin = Math.min(...cumVals);
+  const cSpan = cMax - cMin;
+  let yTop, yBot;
+  if (cSpan > 0) {
+    yTop = cMax + cSpan * 0.08;
+    yBot = Math.max(0, cMin - cSpan * 0.16);
+  } else {
+    yTop = cMax * 1.05;
+    yBot = Math.max(0, cMin * 0.5);
+  }
+  if (yTop <= yBot) yTop = yBot + 1;
+  const Y = (v) => padT + (1 - (v - yBot) / (yTop - yBot)) * ih;
+  const line = (pts) =>
     pts.map((p, i) => (i ? "L" : "M") + X(p.t).toFixed(1) + " " + Y(p.v).toFixed(1)).join("");
+  const area =
+    `M ${X(rewards[0].t).toFixed(1)} ${(padT + ih).toFixed(1)} ` +
+    rewards.map((p) => `L ${X(p.t).toFixed(1)} ${Y(p.v).toFixed(1)}`).join(" ") +
+    ` L ${X(rewards[rewards.length - 1].t).toFixed(1)} ${(padT + ih).toFixed(1)} Z`;
+
+  // Daily bars behind the line: scaled to their own range so the day-to-day
+  // jumps and dips are loud (a cumulative line can only ever rise).
+  const dList = daily || [];
+  const dMax = Math.max(1, ...dList.map((p) => p.v));
+  const slot = iw / Math.max(1, rewards.length);
+  const bw = Math.max(2, slot * 0.62);
+  let bars = "";
+  dList.forEach((p) => {
+    const h = Math.max(1, (p.v / dMax) * ih * 0.62);
+    bars += `<rect x="${(X(p.t) - bw / 2).toFixed(1)}" y="${(padT + ih - h).toFixed(1)}" width="${bw.toFixed(1)}" height="${h.toFixed(1)}" rx="1" fill="rgba(0,0,0,0.13)"/>`;
+  });
+
   const ticks = 4;
   let grid = `<line class="chart-grid" x1="${padL}" y1="${padT + ih}" x2="${padL + iw}" y2="${padT + ih}"/>`;
   for (let g = 0; g <= ticks; g++) {
-    const v = ymax * (1 - g / ticks);
+    const v = yBot + (yTop - yBot) * (1 - g / ticks);
     const y = padT + (ih * g) / ticks;
     grid += `<line class="chart-grid" x1="${padL}" y1="${y}" x2="${padL + iw}" y2="${y}"/>`;
     grid += `<text class="chart-label" x="${padL - 8}" y="${y + 3}" text-anchor="end">${fmtUsd(v)}</text>`;
   }
+
   let end = "";
+  rewards.forEach((p, i) => {
+    if (i === rewards.length - 1) return;
+    end += `<circle cx="${X(p.t).toFixed(1)}" cy="${Y(p.v).toFixed(1)}" r="2.5" fill="#000"/>`;
+  });
   const rl = rewards[rewards.length - 1];
-  if (rl) {
-    end += `<circle cx="${X(rl.t).toFixed(1)}" cy="${Y(rl.v).toFixed(1)}" r="3.5" fill="#000"/>`;
-    end += `<text class="chart-label chart-label-end" x="${(X(rl.t) - 5).toFixed(1)}" y="${(Y(rl.v) - 7).toFixed(1)}" text-anchor="end">${fmtUsd(rl.v)}</text>`;
-  }
-  const ll = liq[liq.length - 1];
-  if (ll) {
-    end += `<circle cx="${X(ll.t).toFixed(1)}" cy="${Y(ll.v).toFixed(1)}" r="3.5" fill="#a3a3a3"/>`;
-    end += `<text class="chart-label chart-label-end" x="${(X(ll.t) - 5).toFixed(1)}" y="${(Y(ll.v) + 15).toFixed(1)}" text-anchor="end">${fmtUsd(ll.v)}</text>`;
-  }
+  end += `<circle cx="${X(rl.t).toFixed(1)}" cy="${Y(rl.v).toFixed(1)}" r="4" fill="#000"/>`;
+  end += `<text class="chart-label chart-label-end" x="${(X(rl.t) - 7).toFixed(1)}" y="${(Y(rl.v) - 8).toFixed(1)}" text-anchor="end">${fmtUsd(rl.v)}</text>`;
+
   svg.innerHTML =
     grid +
-    `<path d="${path(rewards)}" fill="none" stroke="#000" stroke-width="2"/>` +
-    `<path d="${path(liq)}" fill="none" stroke="#a3a3a3" stroke-width="2" stroke-dasharray="3 3"/>` +
+    bars +
+    `<path d="${area}" fill="rgba(0,0,0,0.05)" stroke="none"/>` +
+    `<path d="${line(rewards)}" fill="none" stroke="#000" stroke-width="2.5" stroke-linejoin="round"/>` +
     end;
   document.getElementById("chart-time-min").textContent = fmtDate(x0);
   document.getElementById("chart-time-max").textContent = fmtDate(x1);
@@ -377,9 +408,12 @@ async function loadDashboard() {
     document.getElementById("dash-rewards").textContent = fmtUsd(totalRewards);
     renderDaily(daily);
     renderDailyBars(daily);
-    drawGrowthChart({ rewards: daily.map((d) => ({ t: d.t, v: d.cum })), liq: trackLiquidity(totalLiq) });
+    drawGrowthChart({
+      rewards: daily.map((d) => ({ t: d.t, v: d.cum })),
+      daily: daily.map((d) => ({ t: d.t, v: d.dist })),
+    });
     document.getElementById("chart-note").textContent =
-      "Holder rewards = 3% of pooled trading volume (50% of the 6% tax), in USD. Liquidity line tracks live while the page is open.";
+      "Line = cumulative holder rewards over time. Bars = rewards paid each day (3% of pooled volume); bar heights are scaled to the busiest day.";
   } else {
     document.getElementById("dash-rewards24").textContent = fmtUsd(rewards24);
   }

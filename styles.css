@@ -245,7 +245,7 @@ h1 .accent {
 .chart-legend { display: flex; gap: 18px; font-size: 12px; color: var(--dim); }
 .lg { display: inline-flex; align-items: center; gap: 7px; }
 .lg i { width: 10px; height: 10px; border-radius: 3px; display: inline-block; }
-.lg-liq i { background: #a3a3a3; }
+.lg-daily i { background: rgba(0, 0, 0, 0.13); }
 .lg-reward i { background: #000; }
 
 .chart-box { width: 100%; margin-top: 16px; }
