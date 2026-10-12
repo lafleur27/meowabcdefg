@@ -104,7 +104,7 @@ async function loadStats() {
   const addr = ca.textContent.trim();
   if (!addr || addr === PLACEHOLDER_CA) return;
   document.querySelectorAll(".buy-link").forEach((a) => {
-    a.href = `https://dexscreener.com/solana/${addr}`;
+    a.href = "https://dexscreener.com/solana/8mleajid7xi3s6tox8vmuqpwuqp5sjdfas8d2bcxv5pg";
     a.target = "_blank";
     a.rel = "noopener";
   });
